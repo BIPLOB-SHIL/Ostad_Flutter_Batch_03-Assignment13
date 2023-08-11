@@ -50,7 +50,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     if(response.isSuccess){
       _summaryCountModel = SummaryCountModel.fromJson(response.body!);
 
-
     }else {
       if(mounted){
         showSnackBar("Get summary count failed", context, Colors.red[500], false);
@@ -89,7 +88,27 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
 }
 
+  Future<void> deleteTask(String taskId) async{
 
+    final NetworkResponse response = await NetworkCaller().getRequest(Urls.deleteTask(taskId));
+    if(response.isSuccess){
+      _taskListModel.data!.removeWhere((element) => element.sId == taskId);
+      if(mounted){
+        setState(() {
+
+        });
+        showSnackBar("Task successfully deleted", context, Colors.green[500], true);
+      }
+
+    }else {
+      if(mounted){
+        showSnackBar("Deletion of the task has been failed", context, Colors.red[500], false);
+      }
+    }
+
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,42 +116,44 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       body: ScreenBackground(
         child: Column(
           children: [
-         const UserProfileBanner(),
-        Padding(
-          padding:  const EdgeInsets.all(8.0),
-          child: _getCountSummaryInProgress ? const LinearProgressIndicator() : Row(
-            children: [
-              Expanded(
-                child: SummaryCard(
-                  number: 1235,
-                  title: "New",
-                ),
-              ),
-              Expanded(
-                child: SummaryCard(
-                  number: 1235,
-                  title: "Progress",
-                ),
-              ),
-              Expanded(
-                child: SummaryCard(
-                  number: 1523,
-                  title: "Cancelled",
-                ),
-              ),
-              Expanded(
-                child: SummaryCard(
-                  number: 1263,
-                  title: "Completed",
-                ),
-              )
-            ],
-          ),
-        ),
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: () async{
-              getNewTask();
+            const UserProfileBanner(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _getCountSummaryInProgress
+                  ? const LinearProgressIndicator()
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: SummaryCard(
+                            number: 1235,
+                            title: "New",
+                          ),
+                        ),
+                        Expanded(
+                          child: SummaryCard(
+                            number: 1235,
+                            title: "Progress",
+                          ),
+                        ),
+                        Expanded(
+                          child: SummaryCard(
+                            number: 1523,
+                            title: "Canceled",
+                          ),
+                        ),
+                        Expanded(
+                          child: SummaryCard(
+                            number: 1263,
+                            title: "Completed",
+                          ),
+                        )
+                      ],
+                    ),
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  getNewTask();
                 },
                 child: _getNewTaskInProgress
                     ? const Center(
@@ -144,11 +165,15 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                           return TaskListTile(
                             backgroundColor: Colors.blue,
                             data: _taskListModel.data![index],
+                            onDeleteTap: () {
+                              deleteTask(_taskListModel.data![index].sId!);
+                            },
+                            onEditTap: () {},
                           );
                         },
                       ),
-          ),
-        ),
+              ),
+            ),
           ],
         ),
       ),

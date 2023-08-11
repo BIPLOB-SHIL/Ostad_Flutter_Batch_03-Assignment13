@@ -30,7 +30,7 @@ class NetworkCaller{
    }
 
   Future<NetworkResponse> postRequest(
-      String url, Map<String, dynamic> body) async {
+      String url, Map<String, dynamic> body,{bool isLogin = false}) async {
     try {
       Response response = await post(
         Uri.parse(url),
@@ -44,7 +44,9 @@ class NetworkCaller{
       if (response.statusCode == 200) {
         return NetworkResponse(true, response.statusCode, jsonDecode(response.body));
       } else if (response.statusCode == 401){
-        gotoLogin();
+        if(isLogin) {
+          gotoLogin();
+        }
       }else {
         return NetworkResponse(false,response.statusCode, null);
 

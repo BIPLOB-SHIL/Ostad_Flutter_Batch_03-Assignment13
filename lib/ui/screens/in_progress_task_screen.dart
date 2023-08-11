@@ -70,8 +70,11 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
                       itemCount: _taskListModel.data?.length ?? 0,
                       itemBuilder: (context, index) {
                         return TaskListTile(
-                            backgroundColor: Colors.purple,
-                            data: _taskListModel.data![index]);
+                          backgroundColor: Colors.purple,
+                          data: _taskListModel.data![index],
+                          onDeleteTap: () {},
+                          onEditTap: () {},
+                        );
                       },
                     ),
             ),

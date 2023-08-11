@@ -22,40 +22,38 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
    bool _addNewTaskInProgress = false;
    final _formKey = GlobalKey<FormState>();
 
-  Future<void> addNewTask() async {
+   Future<void> addNewTask() async {
     _addNewTaskInProgress = true;
     if (mounted) {
       setState(() {});
     }
 
-      Map<String, dynamic> responseBody = {
-        "title": _titleController.text.trim(),
-        "description": _descriptionController.text.trim(),
-        "status": "New"
-      };
+    Map<String, dynamic> responseBody = {
+      "title": _titleController.text.trim(),
+      "description": _descriptionController.text.trim(),
+      "status": "New"
+    };
 
-      final NetworkResponse response =
-          await NetworkCaller().postRequest(Urls.createTaskUrl, responseBody);
-
+    final NetworkResponse response =
+        await NetworkCaller().postRequest(Urls.createTaskUrl, responseBody);
 
     _addNewTaskInProgress = false;
     if (mounted) {
       setState(() {});
     }
 
-      if(response.isSuccess){
-        _titleController.clear();
-        _descriptionController.clear();
-        if(mounted){
-
-          showSnackBar("Task added successfully", context, Colors.green[500], true);
-        }else{
-          if(mounted){
-            showSnackBar("Task add failed", context, Colors.red[500], true);
-          }
+    if (response.isSuccess) {
+      _titleController.clear();
+      _descriptionController.clear();
+      if (mounted) {
+        showSnackBar(
+            "Task added successfully", context, Colors.green[500], true);
+      } else {
+        if (mounted) {
+          showSnackBar("Task add failed", context, Colors.red[500], true);
         }
       }
-
+    }
   }
 
   @override
@@ -86,10 +84,10 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                           controller: _titleController,
                           keyboardType: TextInputType.text,
                           decoration: const InputDecoration(
-                              hintText: "Subject",
+                            hintText: "Subject",
                           ),
-                          validator: (value){
-                            if (value == null || value.isEmpty){
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
                               return 'Required field is empty';
                             }
                             return null;
@@ -103,10 +101,10 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                           keyboardType: TextInputType.text,
                           maxLines: 7,
                           decoration: const InputDecoration(
-                              hintText: "Description",
+                            hintText: "Description",
                           ),
-                          validator: (value){
-                            if (value == null || value.isEmpty){
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
                               return 'Required field is empty';
                             }
                             return null;
@@ -119,19 +117,20 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                           width: double.infinity,
                           child: Visibility(
                             visible: _addNewTaskInProgress == false,
-                            replacement: const Center(child: CircularProgressIndicator(),),
+                            replacement: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                             child: ElevatedButton(
                               onPressed: () {
-                                if(_formKey.currentState!.validate()){
+                                if (_formKey.currentState!.validate()) {
                                   addNewTask();
                                 }
-
                               },
-                              child: const Icon(Icons.arrow_circle_right_outlined),
+                              child:
+                                  const Icon(Icons.arrow_circle_right_outlined),
                             ),
                           ),
                         ),
-
                       ],
                     ),
                   ),

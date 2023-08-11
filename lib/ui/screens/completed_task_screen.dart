@@ -64,13 +64,18 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
               child: _getCompletedTaskInProgress
                   ? const Center(
                       child: CircularProgressIndicator(),
-                  )
+                    )
                   : ListView.builder(
-                itemCount: _taskListModel.data?.length ?? 0,
-                itemBuilder: (context, index) {
-                  return  TaskListTile(backgroundColor: Colors.teal,data: _taskListModel.data![index],);
-                },
-              ),
+                      itemCount: _taskListModel.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return TaskListTile(
+                          backgroundColor: Colors.teal,
+                          data: _taskListModel.data![index],
+                          onDeleteTap: () {},
+                          onEditTap: () {},
+                        );
+                      },
+                    ),
             ),
           ],
         ),

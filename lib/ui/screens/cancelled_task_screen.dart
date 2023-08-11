@@ -69,8 +69,12 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
                   : ListView.builder(
                       itemCount: 23,
                       itemBuilder: (context, index) {
-                        return SizedBox();
-                        //  TaskListTile(backgroundColor: Colors.red,data: _taskListModel.data![index]);
+                        return TaskListTile(
+                          backgroundColor: Colors.red,
+                          data: _taskListModel.data![index],
+                          onDeleteTap: () {},
+                          onEditTap: () {},
+                        );
                       },
                     ),
             ),
