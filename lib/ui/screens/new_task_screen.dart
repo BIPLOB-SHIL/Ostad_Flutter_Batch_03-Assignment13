@@ -6,12 +6,15 @@ import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/models/summary_count_model.dart';
 import 'package:task_manager/data/models/task_list_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/ui/screens/update_task_bottom_sheet.dart';
+import 'package:task_manager/ui/screens/update_task_status_bottom_sheet.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import '../../data/utils/urls.dart';
 import '../utils/show_snackbar.dart';
 import '../widgets/summary_card.dart';
 import '../widgets/task_list_tile.dart';
 import '../widgets/user_profile_banner.dart';
+import 'add_new_task_screen.dart';
 
 class NewTaskScreen extends StatefulWidget {
   const NewTaskScreen({super.key});
@@ -110,6 +113,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
 
   }
 
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,7 +175,9 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                             onDeleteTap: () {
                               deleteTask(_taskListModel.data![index].sId!);
                             },
-                            onEditTap: () {},
+                            onEditTap: () {
+                              showStatusTaskBottomSheet(_taskListModel.data![index]);
+                            },
                           );
                         },
                       ),
@@ -177,12 +186,42 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddNewTaskScreen()));
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
+
+  void showEditBottomSheet(TaskData task) {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return UpdateTaskBottomSheet(
+            task: task,
+            onUpdate: () {
+              getNewTask();
+            },
+          );
+        });
+  }
+
+  void showStatusTaskBottomSheet(TaskData task) {
+
+
+    showModalBottomSheet(
+        context: context,
+       useSafeArea: true,
+       // isScrollControlled: true,
+        builder: (context) {
+          return UpdateStatusBottomSheet(task: task, onUpdate: (){
+            getNewTask();
+          });
+        });
+  }
 }
-
-
-
-
-
 

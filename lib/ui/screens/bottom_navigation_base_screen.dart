@@ -15,16 +15,15 @@ class BottomNavigationBaseScreen extends StatefulWidget {
   State<BottomNavigationBaseScreen> createState() => _BottomNavigationBaseScreenState();
 }
 
-class _BottomNavigationBaseScreenState extends State<BottomNavigationBaseScreen> {
-
-  int _selectedScreenIndex =0;
+class _BottomNavigationBaseScreenState
+    extends State<BottomNavigationBaseScreen> {
+  int _selectedScreenIndex = 0;
   final List<Widget> _screens = const [
     NewTaskScreen(),
     InProgressTaskScreen(),
     CancelledTaskScreen(),
     CompletedTaskScreen()
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,29 +36,23 @@ class _BottomNavigationBaseScreenState extends State<BottomNavigationBaseScreen>
         showSelectedLabels: true,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
-        onTap: (int index){
+        onTap: (int index) {
           _selectedScreenIndex = index;
-          if(mounted){
-            setState(() {
-
-            });
+          if (mounted) {
+            setState(() {});
           }
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.list_alt),label: "New Task"),
-          BottomNavigationBarItem(icon: Icon(Icons.access_time_rounded),label: "In Progress"),
-          BottomNavigationBarItem(icon: Icon(Icons.cancel_outlined),label: "Canceled"),
-          BottomNavigationBarItem(icon: Icon(Icons.check_circle_outlined),label: "Completed")
+          BottomNavigationBarItem(
+              icon: Icon(Icons.list_alt), label: "New Task"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.access_time_rounded), label: "In Progress"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.cancel_outlined), label: "Canceled"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.check_circle_outlined), label: "Completed")
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) =>  AddNewTaskScreen()));
-        },
-        child: const Icon(Icons.add),
-      ),
-
 
     );
   }

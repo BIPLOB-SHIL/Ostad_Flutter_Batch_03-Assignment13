@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -72,7 +74,8 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
                         return TaskListTile(
                           backgroundColor: Colors.purple,
                           data: _taskListModel.data![index],
-                          onDeleteTap: () {},
+                          onDeleteTap: () {
+                          },
                           onEditTap: () {},
                         );
                       },

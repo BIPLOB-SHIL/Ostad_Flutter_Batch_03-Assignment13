@@ -5,17 +5,23 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'login_screen.dart';
 
 
-class ResetPasswordScreen extends StatelessWidget {
-  ResetPasswordScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  final String email,otp;
+  const ResetPasswordScreen({super.key, required this.email, required this.otp});
 
+  @override
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+}
+
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _emailAddressController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
 
   bool validateEmail(String email) {
     bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(email);
     return emailValid;
   }
-
 
   @override
   Widget build(BuildContext context) {

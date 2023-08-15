@@ -67,7 +67,7 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
                       child: CircularProgressIndicator(),
                     )
                   : ListView.builder(
-                      itemCount: 23,
+                      itemCount: _taskListModel.data?.length ?? 0,
                       itemBuilder: (context, index) {
                         return TaskListTile(
                           backgroundColor: Colors.red,
