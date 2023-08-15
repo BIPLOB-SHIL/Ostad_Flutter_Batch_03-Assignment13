@@ -11,6 +11,7 @@ class Urls{
   static String completeTask = '$_baseUrl/listTaskByStatus/Completed';
   static String sendOtpToEmail (String email) => '$_baseUrl/RecoverVerifyEmail/$email';
   static String otpVerify (String email,otp) => '$_baseUrl/RecoverVerifyOTP/$email/$otp';
+  static String resetPassword = '$_baseUrl/RecoverResetPass';
 
   static String deleteTask (String id) => '$_baseUrl/deleteTask/$id';
   static String updateTask (String id,String status) => '$_baseUrl/updateTaskStatus/$id/$status';
