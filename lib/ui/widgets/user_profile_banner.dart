@@ -19,11 +19,10 @@ class _UserProfileBannerState extends State<UserProfileBanner> {
     return Material(
       child: ListTile(
         onTap: () {
-          Navigator.pushAndRemoveUntil(
+          Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const UpdateProfileScreen()),
-              (route) => false);
+                  builder: (context) => const UpdateProfileScreen()));
         },
         tileColor: Colors.teal,
         leading: const CircleAvatar(

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/update_task_status_bottom_sheet.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/models/task_list_model.dart';
@@ -54,6 +55,24 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
 
   }
 
+  Future<void> deleteTask(String taskId) async {
+    final NetworkResponse response =
+    await NetworkCaller().getRequest(Urls.deleteTask(taskId));
+    if (response.isSuccess) {
+      _taskListModel.data!.removeWhere((element) => element.sId == taskId);
+      if (mounted) {
+        setState(() {});
+        showSnackBar(
+            "Task successfully deleted", context, Colors.green[500], true);
+      }
+    } else {
+      if (mounted) {
+        showSnackBar("Deletion of the task has been failed", context,
+            Colors.red[500], false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,8 +91,12 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
                         return TaskListTile(
                           backgroundColor: Colors.red,
                           data: _taskListModel.data![index],
-                          onDeleteTap: () {},
-                          onEditTap: () {},
+                          onDeleteTap: () {
+                            deleteTask(_taskListModel.data![index].sId!);
+                          },
+                          onEditTap: () {
+                            showStatusTaskBottomSheet(_taskListModel.data![index]);
+                          },
                         );
                       },
                     ),
@@ -82,5 +105,18 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
         ),
       ),
     );
+  }
+  void showStatusTaskBottomSheet(TaskData task) {
+    showModalBottomSheet(
+        context: context,
+        useSafeArea: true,
+        // isScrollControlled: true,
+        builder: (context) {
+          return UpdateStatusBottomSheet(
+              task: task,
+              onUpdate: () {
+                getCancelledTask();
+              });
+        });
   }
 }

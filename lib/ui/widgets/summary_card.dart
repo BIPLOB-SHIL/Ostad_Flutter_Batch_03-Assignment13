@@ -11,19 +11,22 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: Column(
-          children: [
-            Text(
-              "$number",
-              style: const TextStyle(fontSize: 24,
-                  fontWeight: FontWeight.w600),
-            ),
-            Text(title),
-          ],
+    return SizedBox(
+      width: 100,
+      height: 80,
+      child: Card(
+        elevation: 3,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Text("$number",
+                style: const TextStyle(fontSize: 24,
+                    fontWeight: FontWeight.w600),
+              ),
+              Text(title),
+            ],
+          ),
         ),
       ),
     );
