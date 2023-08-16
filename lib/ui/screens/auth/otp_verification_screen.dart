@@ -47,8 +47,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       }
     } else {
       if (mounted) {
-        showSnackBar(
-            "OTP verification failed", context, Colors.red[500], false);
+        showSnackBar("OTP verification failed", context, Colors.red[500], false);
       }
     }
   }
