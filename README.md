@@ -1,4 +1,4 @@
-# task_manager
+# task_manager_getx
 
 A new Flutter project.
 
