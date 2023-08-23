@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../data/models/network_response.dart';
-import '../../../data/services/network_caller.dart';
-import '../../../data/utils/urls.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../utils/show_snackbar.dart';
 import '../../widgets/screen_background.dart';
+import '../state_manager/reset_password_controller.dart';
 import 'login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -18,45 +18,13 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  bool _setPasswordInProgress = false;
+
 
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> resetPassword() async {
-    _setPasswordInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
+  final ResetPasswordController resetPasswordController = Get.put(ResetPasswordController());
 
-    final Map<String,dynamic> responseBody = {
-        "email":widget.email,
-        "OTP": widget.otp,
-        "password": _passwordController.text
 
-    };
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.resetPassword,responseBody);
-
-    _setPasswordInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
-      if (mounted) {
-         showSnackBar("Password reset successful", context, Colors.green[500], true);
-         Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-            (route) => false);
-      }
-    } else {
-      if (mounted) {
-        showSnackBar("Reset password failed", context, Colors.red[500], false);
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +52,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     height: 16,
                   ),
                   TextFormField(
-                      controller: _passwordController,
+                      controller: resetPasswordController.passwordController,
                       decoration: const InputDecoration(
                         hintText: "Password",
                       ),
@@ -101,14 +69,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     height: 16,
                   ),
                   TextFormField(
-                      controller: _confirmPasswordController,
+                      controller: resetPasswordController.confirmPasswordController,
                       decoration: const InputDecoration(
                         hintText: "Confirm password",
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Required field is empty';
-                        }else if (value != _passwordController.text){
+                        }else if (value != resetPasswordController.passwordController.text){
                           return 'Confirm password doesn\'t match';
                         }
                         return null;
@@ -118,13 +86,27 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          resetPassword();
-                        }
-                      },
-                      child: const Text("Confirm"),
+                    child: GetBuilder<ResetPasswordController>(
+                      builder: (resetPasswordController) {
+                        return ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              resetPasswordController.resetPassword(widget.email,widget.otp).then((value){
+
+                                if(value == true){
+                                  showSnackBar("Password reset successful", context, Colors.green[500], true);
+                                  Get.offAll(()=> const LoginScreen());
+                                }
+                                else{
+                                  showSnackBar("Reset password failed", context, Colors.red[500], false);
+                                }
+
+                              });
+                            }
+                          },
+                          child: const Text("Confirm"),
+                        );
+                      }
                     ),
                   ),
                   const SizedBox(
@@ -140,11 +122,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()),
-                              (route) => false);
+                          Get.offAll(()=>const LoginScreen());
                         },
                         child: const Text("Sign in"),
                       ),
