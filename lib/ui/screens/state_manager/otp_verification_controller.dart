@@ -31,6 +31,7 @@ class OtpVerificationController extends GetxController {
       return true;
 
     } else {
+      _otpEditingController.clear();
       return false;
 
     }

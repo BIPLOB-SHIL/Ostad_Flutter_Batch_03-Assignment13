@@ -58,6 +58,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         height: 16,
                       ),
                       PinCodeTextField(
+                        backgroundColor: const Color(0xFFF3F5F3),
                         length: 6,
                         obscureText: false,
                         animationType: AnimationType.fade,
@@ -71,8 +72,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             inactiveColor: const Color(0x3700FF83),
                             activeColor: const Color(0x3700FF83),
                             selectedColor: const Color(0xFF00FF83),
-                            selectedFillColor: const Color(0xFFFFFFFF),
-                            activeFillColor: const Color(0xFFFFFFFF)),
+                            selectedFillColor: const Color(0xFFF3F5F3),
+                            activeFillColor: const Color(0xFFF3F5F3),
+                        ),
                         animationDuration: const Duration(milliseconds: 300),
                         enableActiveFill: true,
                         cursorColor: Colors.teal,
@@ -81,15 +83,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         onCompleted: (v) {
 
                         },
-                        // validator: (value) {
-                        //     if (value == null || value.isEmpty) {
-                        //       return 'Required field is empty';
-                        //     }
-                        //     if (value.length < 6) {
-                        //       return 'The OTP must be at least 6 characters long';
-                        //     }
-                        //     return null;
-                        //   },
+                        validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return null;
+                            }
+                            return null;
+                          },
                         onChanged: (value) {
 
                         },
@@ -113,7 +112,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               replacement: const Center(child: CircularProgressIndicator(),),
                               child: ElevatedButton(
                                 onPressed: () {
-                             //    if (_formKey.currentState!.validate()) {
+                              if (_formKey.currentState!.validate()) {
 
                                     otpVerificationController.verifyOtp(widget.email).then((value){
 
@@ -125,7 +124,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                       }
 
                                     });
-                               //  }
+                                }
                                 },
                                 child: const Text(
                                   "Verify",
