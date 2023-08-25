@@ -42,6 +42,7 @@ dependencies:
   smart_snackbars:
   shared_preferences:
   get:
+  get_storage:
 
 dev_dependencies:
   flutter_test:

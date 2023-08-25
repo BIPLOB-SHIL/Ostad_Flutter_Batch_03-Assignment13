@@ -28,8 +28,8 @@ class ResetPasswordController extends GetxController {
       "email": email,
       "OTP":  otp,
       "password": _passwordController.text
-
     };
+
     final NetworkResponse response =
     await NetworkCaller().postRequest(Urls.resetPassword,responseBody);
 

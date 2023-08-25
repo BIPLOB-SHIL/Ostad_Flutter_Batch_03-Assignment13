@@ -7,7 +7,6 @@ import 'package:task_manager_getx/ui/screens/state_manager/signup_controller.dar
 import '../../utils/show_snackbar.dart';
 import '../../widgets/screen_background.dart';
 
-
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -17,31 +16,21 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
 
-
-  bool _isVisible = true;
-  final _formKey = GlobalKey<FormState>();
+  bool _isPasswordVisible = true;
+  final _signUpFormKey = GlobalKey<FormState>();
 
   final SignUpController signUpController = Get.put<SignUpController>(SignUpController());
-
-  bool validateEmail(String email) {
-    bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-        .hasMatch(email);
-    return emailValid;
-  }
-
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: ScreenBackground(
-          child: Center(
+      child: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
             child: Form(
-              key: _formKey,
+              key: _signUpFormKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,9 +50,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Required field is empty';
                         }
-
-                        if (validateEmail(value) == false) {
-                          return 'Invalid email';
+                        if (!GetUtils.isEmail(value)) {
+                          return "Please enter valid email";
                         }
                         return null;
                       }),
@@ -110,8 +98,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Required field is empty';
                         }
-                        if (value.length > 11) {
-                          return "The mobile number shouldn't be 11 letters long";
+                        if (value.length != 11) {
+                          return "Mobile Number must be of 11 digit";
                         }
                         return null;
                       }),
@@ -121,17 +109,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextFormField(
                     controller: signUpController.passwordController,
                     keyboardType: TextInputType.visiblePassword,
-                    obscureText: _isVisible,
+                    obscureText: _isPasswordVisible,
                     decoration: InputDecoration(
                         hintText: "Password",
                         suffixIcon: IconButton(
                           onPressed: () {
                             if (mounted) {
-                              _isVisible = !_isVisible;
+                              _isPasswordVisible = !_isPasswordVisible;
                               setState(() {});
                             }
                           },
-                          icon: _isVisible
+                          icon: _isPasswordVisible
                               ? const Icon(Icons.visibility_off)
                               : const Icon(
                                   Icons.visibility,
@@ -150,36 +138,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  GetBuilder<SignUpController>(
-                    builder: (signUpController) {
-                      return SizedBox(
-                        width: double.infinity,
-                        child: Visibility(
-                          visible: signUpController.signUpInProgress == false,
-                          replacement: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  signUpController.userSignUp().then((value){
-
-                                    if(value == true){
-                                      showSnackBar("Registration successful.", context, Colors.green[500], true);
-                                      Get.off(()=> const LoginScreen());
-                                    }
-                                    else{
-                                      showSnackBar("Registration failed.", context, Colors.red[500], false);
-                                    }
-
-                                  });
-                                }
-                              },
-                              child: const Icon(Icons.arrow_circle_right_outlined)),
+                  GetBuilder<SignUpController>(builder: (signUpController) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Visibility(
+                        visible: signUpController.signUpInProgress == false,
+                        replacement: const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                      );
-                    }
-                  ),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              if (_signUpFormKey.currentState!.validate()) {
+                                signUpController.userSignUp().then((value) {
+                                  if (value == true) {
+                                    showGetXSnackBar("Sign up","Registration successful", Colors.green[500], true);
+                                    Get.off(() => const LoginScreen());
+                                  } else {
+                                    showGetXSnackBar("Sign up","Registration failed",Colors.red[500], false);
+                                  }
+                                });
+                              }
+                            },
+                            child:
+                                const Icon(Icons.arrow_circle_right_outlined)),
+                      ),
+                    );
+                  }),
                   const SizedBox(
                     height: 16,
                   ),

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'cancelled_task_screen.dart';
-import 'completed_task_screen.dart';
-import 'in_progress_task_screen.dart';
-import 'new_task_screen.dart';
+import 'task_screen/cancelled_task_screen.dart';
+import 'task_screen/completed_task_screen.dart';
+import 'task_screen/in_progress_task_screen.dart';
+import 'task_screen/new_task_screen.dart';
 
 class BottomNavigationBaseScreen extends StatefulWidget {
   const BottomNavigationBaseScreen({super.key});
@@ -28,7 +28,7 @@ class _BottomNavigationBaseScreenState
       body: _screens[_selectedScreenIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedScreenIndex,
-        selectedItemColor: Colors.deepOrange,
+        selectedItemColor: Colors.indigo,
         unselectedItemColor: Colors.grey,
         showSelectedLabels: true,
         showUnselectedLabels: true,
@@ -47,7 +47,7 @@ class _BottomNavigationBaseScreenState
           BottomNavigationBarItem(
               icon: Icon(Icons.cancel_outlined), label: "Canceled"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.check_circle_outlined), label: "Completed")
+              icon: Icon(Icons.check_circle_outlined), label: "Completed"),
         ],
       ),
 

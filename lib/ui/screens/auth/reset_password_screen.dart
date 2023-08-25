@@ -20,17 +20,16 @@ class ResetPasswordScreen extends StatefulWidget {
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
 
-  final _formKey = GlobalKey<FormState>();
+  final _passWordFormKey = GlobalKey<FormState>();
 
   final ResetPasswordController resetPasswordController = Get.put(ResetPasswordController());
-
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Form(
-      key: _formKey,
+      key: _passWordFormKey,
       child: ScreenBackground(
         child: Center(
           child: SingleChildScrollView(
@@ -90,15 +89,15 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       builder: (resetPasswordController) {
                         return ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
+                            if (_passWordFormKey.currentState!.validate()) {
                               resetPasswordController.resetPassword(widget.email,widget.otp).then((value){
 
                                 if(value == true){
-                                  showSnackBar("Password reset successful", context, Colors.green[500], true);
+                                  showGetXSnackBar("Reset password","Password reset successful",Colors.green[500], true);
                                   Get.offAll(()=> const LoginScreen());
                                 }
                                 else{
-                                  showSnackBar("Reset password failed", context, Colors.red[500], false);
+                                  showGetXSnackBar("Reset password","Reset password failed",Colors.red[500], false);
                                 }
 
                               });

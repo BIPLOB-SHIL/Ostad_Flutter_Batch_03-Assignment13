@@ -18,23 +18,16 @@ class EmailVerificationScreen extends StatefulWidget {
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
-  final _formKey = GlobalKey<FormState>();
+  final _emailVerificationFormKey = GlobalKey<FormState>();
 
   final EmailVerificationController emailVerificationController = Get.put<EmailVerificationController>(EmailVerificationController());
-
-  bool validateEmail(String email) {
-    bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-        .hasMatch(email);
-    return emailValid;
-  }
-
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Form(
-      key: _formKey,
+      key: _emailVerificationFormKey,
       child: ScreenBackground(
         child: Center(
           child: SingleChildScrollView(
@@ -64,8 +57,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           return 'Required field is empty';
                         }
 
-                        if (validateEmail(value) == false) {
-                          return 'Invalid email';
+                        if (!GetUtils.isEmail(value)) {
+                          return 'Please enter valid email';
                         }
                         return null;
                       }),
@@ -81,14 +74,14 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                           replacement: const Center(child: CircularProgressIndicator(),),
                           child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) {
+                                if (_emailVerificationFormKey.currentState!.validate()) {
                                   emailVerificationController.sendOTPToEmail().then((value){
 
                                     if(value == true){
                                       Get.to(()=> OtpVerificationScreen(email: emailVerificationController.emailAddressController.text.trim()));
                                     }
                                     else{
-                                      showSnackBar("Email verification failed", context, Colors.red[500], false);
+                                      showGetXSnackBar("Email verification","Email verification failed",Colors.red[500], false);
                                     }
 
                                   });

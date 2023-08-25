@@ -16,128 +16,121 @@ import '../state_manager/login_controller.dart';
 import 'email_verification_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-   const LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   bool _isVisible = true;
-  final _formKey = GlobalKey<FormState>();
+  final _logInFormKey = GlobalKey<FormState>();
 
-
- // final LoginController loginController = Get.put<LoginController>(LoginController());
-  final LoginController loginController = Get.put(LoginController());
-
-  bool validateEmail(String email) {
-    bool emailValid = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$').hasMatch(email);
-    return emailValid;
-  }
-
+  final LoginController loginController = Get.put<LoginController>(LoginController());
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ScreenBackground(
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Get Started With",
-                    style: Theme.of(context).textTheme.titleLarge),
-                    const SizedBox(height: 16,),
-                    TextFormField(
+        body: ScreenBackground(
+      child: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Form(
+              key: _logInFormKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Get Started With",
+                      style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  TextFormField(
                       controller: loginController.emailAddressController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
                         hintText: "Email",
                       ),
-                        validator: (value){
-                          if(value == null || value.isEmpty)
-                          {
-                            return 'Required field is empty';
-                          }
-                          if(validateEmail(value)== false){
-                            return 'Invalid email';
-                          }
-                          return null;
-                        }
-                    ),
-                    const SizedBox(height: 12,),
-                    TextFormField(
-                      controller: loginController.passwordController,
-                      keyboardType: TextInputType.phone,
-                      obscureText: _isVisible,
-                      decoration: InputDecoration(
-                        hintText: "Password",
-                        suffixIcon: IconButton(
-                          onPressed: (){
-                            if(mounted) {
-                              _isVisible = !_isVisible;
-                              setState(() {
-                              });
-                            }
-                          },
-                          icon: _isVisible ? const Icon(Icons.visibility_off) : const Icon(Icons.visibility,),
-                        )
-                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Required field is empty';
                         }
-                        if (value.length < 8) {
-                          return 'The password must be at least 8 characters long';
+                        if (!GetUtils.isEmail(value)) {
+                          return 'Please enter valid email';
                         }
                         return null;
-                      },
-                    ),
+                      }),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  TextFormField(
+                    controller: loginController.passwordController,
+                    keyboardType: TextInputType.phone,
+                    obscureText: _isVisible,
+                    decoration: InputDecoration(
+                        hintText: "Password",
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            if (mounted) {
+                              _isVisible = !_isVisible;
+                              setState(() {});
+                            }
+                          },
+                          icon: _isVisible
+                              ? const Icon(Icons.visibility_off)
+                              : const Icon(
+                                  Icons.visibility,
+                                ),
+                        )),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Required field is empty';
+                      }
+                      if (value.length < 8) {
+                        return 'The password must be at least 8 characters long';
+                      }
+                      return null;
+                    },
+                  ),
                   const SizedBox(
                     height: 16,
                   ),
-                  GetBuilder<LoginController>(
-                    builder: (longinController) {
-                      return SizedBox(
-                        width: double.infinity,
-                        child: Visibility(
-                          visible: loginController.logInProgress == false,
-                          replacement: const Center(child: CircularProgressIndicator(),),
-                          child: ElevatedButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  loginController.userLogIn().then((value){
-                                    if(value == true){
-                                      Get.off(()=> const BottomNavigationBaseScreen());
-                                    }
-                                    else{
-                                      showSnackBar("Incorrect email or password", context, Colors.red[500], false);
-                                    }
-
-                                  });
-                                }
-                              },
-                              child: const Icon(Icons.arrow_forward_ios),
-
-                      ),
+                  GetBuilder<LoginController>(builder: (longinController) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: Visibility(
+                        visible: loginController.logInProgress == false,
+                        replacement: const Center(
+                          child: CircularProgressIndicator(),
                         ),
-                      );
-                    }
-                  ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_logInFormKey.currentState!.validate()) {
+                              loginController.userLogIn().then((value) {
+                                if (value == true) {
+                                  Get.off(
+                                      () => const BottomNavigationBaseScreen());
+                                } else {
+                                  showGetXSnackBar("Log in","Incorrect email or password", Colors.red[500], false);
+                                }
+                              });
+                            }
+                          },
+                          child: const Icon(Icons.arrow_forward_ios),
+                        ),
+                      ),
+                    );
+                  }),
                   const SizedBox(
                     height: 16,
                   ),
                   Center(
                     child: InkWell(
                       onTap: () {
-                        Get.to(()=>const EmailVerificationScreen());
+                        Get.to(() => const EmailVerificationScreen());
                       },
                       child: const Text(
                         "Forgot Password ?",
@@ -155,23 +148,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Get.to(()=>const SignUpScreen());
+                          Get.to(() => const SignUpScreen());
                         },
                         child: const Text("Sign up"),
                       ),
                     ],
                   ),
                 ],
-                ),
               ),
             ),
           ),
         ),
-      )
-
-    );
+      ),
+    ));
   }
 }
-
-
-

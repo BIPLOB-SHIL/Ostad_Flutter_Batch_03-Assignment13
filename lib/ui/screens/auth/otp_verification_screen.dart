@@ -1,16 +1,9 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager_getx/ui/screens/auth/reset_password_screen.dart';
-
-import '../../../data/models/network_response.dart';
-import '../../../data/services/network_caller.dart';
-import '../../../data/utils/urls.dart';
 import '../../utils/show_snackbar.dart';
 import '../../widgets/screen_background.dart';
 import '../state_manager/otp_verification_controller.dart';
@@ -29,15 +22,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   final OtpVerificationController otpVerificationController = Get.put(OtpVerificationController());
 
-  final _formKey = GlobalKey<FormState>();
-
-  bool otpValidation = true;
+  final _otpFormKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Form(
-          key: _formKey,
+          key: _otpFormKey,
           child: ScreenBackground(
             child: Center(
               child: SingleChildScrollView(
@@ -112,7 +103,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               replacement: const Center(child: CircularProgressIndicator(),),
                               child: ElevatedButton(
                                 onPressed: () {
-                              if (_formKey.currentState!.validate()) {
+                              if (_otpFormKey.currentState!.validate()) {
 
                                     otpVerificationController.verifyOtp(widget.email).then((value){
 
@@ -120,7 +111,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                         Get.to(()=> ResetPasswordScreen(email: widget.email,otp: otpVerificationController.otpEditingController.text,));
                                       }
                                       else{
-                                        showSnackBar("OTP verification failed", context, Colors.red[500], false);
+                                        showGetXSnackBar("OTP verification","OTP verification failed", Colors.red[500], false);
                                       }
 
                                     });

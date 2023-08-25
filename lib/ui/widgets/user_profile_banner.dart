@@ -2,6 +2,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../data/models/auth_utility.dart';
 import '../screens/auth/login_screen.dart';
@@ -22,10 +24,7 @@ class _UserProfileBannerState extends State<UserProfileBanner> {
     return Material(
       child: ListTile(
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const UpdateProfileScreen()));
+          Get.to(()=> const UpdateProfileScreen());
         },
         tileColor: Colors.white,
         leading: const CircleAvatar(
@@ -45,10 +44,8 @@ class _UserProfileBannerState extends State<UserProfileBanner> {
         trailing: IconButton(
           onPressed: () async {
             await AuthUtility.clearUserInfo();
-            if (mounted) {
-              Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()), (
-                      route) => false);
+            if(mounted) {
+              Get.offAll(() => const LoginScreen());
             }
           },
           icon: const Icon(Icons.logout, color: Colors.black,),
