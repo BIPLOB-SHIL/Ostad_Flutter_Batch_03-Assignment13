@@ -43,10 +43,10 @@ class _UserProfileBannerState extends State<UserProfileBanner> {
         ),
         trailing: IconButton(
           onPressed: () async {
-            await AuthUtility.clearUserInfo();
-            if(mounted) {
-              Get.offAll(() => const LoginScreen());
-            }
+             await AuthUtility.clearUserInfo();
+             if(mounted) {
+               Get.to(() => const LoginScreen());
+             }
           },
           icon: const Icon(Icons.logout, color: Colors.black,),
         ),

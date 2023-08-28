@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager_getx/ui/screens/auth/login_screen.dart';
 import 'package:task_manager_getx/ui/screens/state_manager/signup_controller.dart';
-import '../../utils/show_snackbar.dart';
+import '../../utils/getx_snackbar.dart';
 import '../../widgets/screen_background.dart';
 
 class SignUpScreen extends StatefulWidget {

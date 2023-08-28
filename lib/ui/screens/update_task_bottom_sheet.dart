@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:task_manager_getx/ui/screens/state_manager/update_task_bottom_sheet_controller.dart';
 
 import '../../data/models/network_response.dart';
 import '../../data/models/task_list_model.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/urls.dart';
-import '../utils/show_snackbar.dart';
+import '../utils/getx_snackbar.dart';
 
 class UpdateTaskBottomSheet extends StatefulWidget {
 
@@ -20,53 +23,17 @@ class UpdateTaskBottomSheet extends StatefulWidget {
 
 class _UpdateTaskBottomSheetState extends State<UpdateTaskBottomSheet> {
 
-  late TextEditingController _titleController;
-  late TextEditingController _descriptionController;
-  bool _updateTaskInprogress =false;
 
+  final UpdateTaskBottomSheetController updateTaskBottomSheetController = Get.put(UpdateTaskBottomSheetController());
 
   @override
   void initState() {
-    _titleController = TextEditingController(text: widget.task.title);
-    _descriptionController = TextEditingController(text: widget.task.description);
+    updateTaskBottomSheetController.titleController(text: widget.task.title);
+    updateTaskBottomSheetController.descriptionController(text: widget.task.description);
     super.initState();
   }
 
-  Future<void> updateTask() async {
-    _updateTaskInprogress = true;
-    if (mounted) {
-      setState(() {});
-    }
 
-    Map<String, dynamic> responseBody = {
-      "title": _titleController.text.trim(),
-      "description": _descriptionController.text.trim(),
-    };
-
-    // need to change
-    final NetworkResponse response =
-    await NetworkCaller().postRequest(Urls.createTaskUrl, responseBody);
-
-    _updateTaskInprogress = false;
-    if (mounted) {
-      setState(() {});
-    }
-
-    if (response.isSuccess) {
-      _titleController.clear();
-      _descriptionController.clear();
-      if (mounted) {
-        widget.onUpdate();
-        showSnackBar(
-            "Task updated successfully", context, Colors.green[500], true);
-      }
-      else {
-        if (mounted) {
-          showSnackBar("Task update failed", context, Colors.red[500], true);
-        }
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +53,7 @@ class _UpdateTaskBottomSheetState extends State<UpdateTaskBottomSheet> {
                 const Spacer(),
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Get.back();
                   },
                   icon: const Icon(Icons.close),
                 )
@@ -96,7 +63,7 @@ class _UpdateTaskBottomSheetState extends State<UpdateTaskBottomSheet> {
               height: 16,
             ),
             TextFormField(
-              controller: _titleController,
+              controller: updateTaskBottomSheetController.titleController,
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 hintText: "Subject",
@@ -106,7 +73,7 @@ class _UpdateTaskBottomSheetState extends State<UpdateTaskBottomSheet> {
               height: 16,
             ),
             TextFormField(
-              controller: _descriptionController,
+              controller: updateTaskBottomSheetController.descriptionController,
               keyboardType: TextInputType.text,
               maxLines: 7,
               decoration: const InputDecoration(
@@ -116,20 +83,32 @@ class _UpdateTaskBottomSheetState extends State<UpdateTaskBottomSheet> {
             const SizedBox(
               height: 12,
             ),
-            SizedBox(
-              width: double.infinity,
-              child: Visibility(
-                visible: _updateTaskInprogress == false,
-                replacement: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                  //  updateTask();
-                  },
-                  child: const Text("Update"),
-                ),
-              ),
+            GetBuilder<UpdateTaskBottomSheetController>(
+              builder: (updateTaskBottomSheetController) {
+                return SizedBox(
+                  width: double.infinity,
+                  child: Visibility(
+                    visible: updateTaskBottomSheetController.updateTaskInProgress == false,
+                    replacement: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        updateTaskBottomSheetController.updateTask().then((value){
+                          if (value == true){
+                            widget.onUpdate();
+                            showGetXSnackBar("Update task","Task updated successfully", Colors.green[500], true);
+                          }
+                          else{
+                            showGetXSnackBar("Update task","Task update failed", Colors.red[500], true);
+                          }
+                        });
+                      },
+                      child: const Text("Update"),
+                    ),
+                  ),
+                );
+              }
             ),
           ],
         ),

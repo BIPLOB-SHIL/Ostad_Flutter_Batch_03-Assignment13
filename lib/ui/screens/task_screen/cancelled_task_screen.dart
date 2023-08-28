@@ -9,7 +9,8 @@ import '../../../data/models/network_response.dart';
 import '../../../data/models/task_list_model.dart';
 import '../../../data/services/network_caller.dart';
 import '../../../data/utils/urls.dart';
-import '../../utils/show_snackbar.dart';
+import '../../utils/getx_bottom_sheet.dart';
+import '../../utils/getx_snackbar.dart';
 import '../../widgets/screen_background.dart';
 import '../../widgets/task_list_tile.dart';
 import '../../widgets/user_profile_banner.dart';
@@ -58,7 +59,9 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
                                 allTaskController.deleteTask(allTaskController.taskListModel.data![index].sId!);
                               },
                               onEditTap: () {
-                                showStatusTaskBottomSheet(allTaskController.taskListModel.data![index]);
+                                showGetXStatusTaskBottomSheet(
+                                    allTaskController.taskListModel.data![index],
+                                    Urls.cancelledTask);
                               },
                             );
                           },
@@ -70,18 +73,5 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
         ),
       ),
     );
-  }
-  void showStatusTaskBottomSheet(TaskData task) {
-    showModalBottomSheet(
-        context: context,
-        useSafeArea: true,
-        // isScrollControlled: true,
-        builder: (context) {
-          return UpdateStatusBottomSheet(
-              task: task,
-              onUpdate: () {
-                allTaskController.getAllTask(Urls.cancelledTask);
-              });
-        });
   }
 }

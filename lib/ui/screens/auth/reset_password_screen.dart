@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import '../../utils/show_snackbar.dart';
+import '../../utils/getx_snackbar.dart';
 import '../../widgets/screen_background.dart';
 import '../state_manager/reset_password_controller.dart';
 import 'login_screen.dart';

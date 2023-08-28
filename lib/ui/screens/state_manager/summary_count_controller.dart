@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:task_manager_getx/ui/utils/show_snackbar.dart';
+import 'package:task_manager_getx/ui/utils/getx_snackbar.dart';
 
 import '../../../data/models/auth_utility.dart';
 import '../../../data/models/login_model.dart';

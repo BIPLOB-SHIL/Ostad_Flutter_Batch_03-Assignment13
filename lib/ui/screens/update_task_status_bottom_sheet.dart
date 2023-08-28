@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../data/models/network_response.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:task_manager_getx/ui/screens/state_manager/update_task_status_bottom_sheet_controller.dart';
+import 'package:task_manager_getx/ui/utils/getx_snackbar.dart';
 import '../../data/models/task_list_model.dart';
-import '../../data/services/network_caller.dart';
-import '../../data/utils/urls.dart';
-import '../utils/show_snackbar.dart';
+
 
 class UpdateStatusBottomSheet extends StatefulWidget {
   final TaskData task;
@@ -22,7 +22,9 @@ class UpdateStatusBottomSheet extends StatefulWidget {
 class _UpdateStatusBottomSheetState extends State<UpdateStatusBottomSheet> {
   List<String> taskStatusList = ['New', 'Progress', 'Completed', 'Cancelled'];
   late String _selectedTask;
-  bool isUpdateStatusInProgress = false;
+
+
+  final UpdateTaskStatusBottomSheetController updateTaskStatusBottomSheetController = Get.put(UpdateTaskStatusBottomSheetController());
 
   @override
   void initState() {
@@ -30,42 +32,25 @@ class _UpdateStatusBottomSheetState extends State<UpdateStatusBottomSheet> {
     super.initState();
   }
 
-  Future<void> updateTask(String taskId, String newStatus) async {
-    isUpdateStatusInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
 
-    final NetworkResponse response =
-        await NetworkCaller().getRequest(Urls.updateTask(taskId, newStatus));
-    if (response.isSuccess) {
-      widget.onUpdate();
-      if (mounted) {
-        Navigator.pop(context);
-        await showSnackBar(
-            "Task status updated successfully", context, Colors.green[500], true);
-      }
-    } else {
-      if (mounted) {
-        showSnackBar("Task status update failed", context, Colors.red[500], false);
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text("Update Status",
-              style: Theme.of(context).textTheme.titleLarge),
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "UPDATE STATUS",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 25,
+            color: Colors.black),
+          ),
         ),
         Expanded(
           child: SizedBox(
-            height: 400,
             child: ListView.builder(
-                padding: const EdgeInsets.all(16.0),
                 itemCount: taskStatusList.length,
                 itemBuilder: (context, index) {
                   return ListTile(
@@ -77,27 +62,46 @@ class _UpdateStatusBottomSheetState extends State<UpdateStatusBottomSheet> {
                     },
                     title: Text(taskStatusList[index].toUpperCase()),
                     trailing: _selectedTask == taskStatusList[index]
-                        ? const Icon(Icons.check)
+                        ? const Icon(Icons.check,color: Colors.black,)
                         : null,
+                    leading: const Icon(Icons.task,color: Colors.black,),
                   );
                 }),
           ),
         ),
-        SizedBox(
-          width: double.infinity,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Visibility(
-              visible: isUpdateStatusInProgress == false,
-              replacement: const Center(
-                child: CircularProgressIndicator(),
+        GetBuilder<UpdateTaskStatusBottomSheetController>(
+          builder: (updateTaskStatusBottomSheetController) {
+            return SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Visibility(
+                  visible: updateTaskStatusBottomSheetController.isUpdateStatusInProgress == false,
+                  replacement: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black
+                    ),
+                      onPressed: () {
+                        updateTaskStatusBottomSheetController.updateTask(widget.task.sId!, _selectedTask).then((value)
+                        {
+                          if (value == true){
+                            widget.onUpdate();
+                            Get.back();
+                            showGetXSnackBar("Status","Task status updated successfully" ,Colors.green[500], true);
+                          }
+                          else{
+                            showGetXSnackBar("Status","Task status update failed", Colors.red[500], false);
+                          }
+
+                        });
+                      }, child: const Text("Update Status")),
+                ),
               ),
-              child: ElevatedButton(
-                  onPressed: () {
-                    updateTask(widget.task.sId!, _selectedTask);
-                  }, child: const Text("Update Status")),
-            ),
-          ),
+            );
+          }
         )
       ],
     );

@@ -9,7 +9,7 @@ import '../../../data/models/login_model.dart';
 import '../../../data/models/network_response.dart';
 import '../../../data/services/network_caller.dart';
 import '../../../data/utils/urls.dart';
-import '../../utils/show_snackbar.dart';
+import '../../utils/getx_snackbar.dart';
 import '../../widgets/screen_background.dart';
 import '../bottom_navigation_base_screen.dart';
 import '../state_manager/login_controller.dart';

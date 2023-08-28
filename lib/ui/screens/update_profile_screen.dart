@@ -1,14 +1,13 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:task_manager_getx/ui/screens/state_manager/update_profile_controller.dart';
 import '../../data/models/auth_utility.dart';
 import '../../data/models/login_model.dart';
-import '../../data/models/network_response.dart';
-import '../../data/services/network_caller.dart';
-import '../../data/utils/urls.dart';
-import '../utils/show_snackbar.dart';
+import '../utils/getx_snackbar.dart';
 import '../widgets/screen_background.dart';
-
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -20,76 +19,31 @@ class UpdateProfileScreen extends StatefulWidget {
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   UserData userData = AuthUtility.userInfo.data!;
 
-  final _emailController = TextEditingController();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _mobileController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _profileUpdateInProgress = false;
-
   bool _isVisible = true;
-  final _formKey = GlobalKey<FormState>();
+  final _updateProfileFormKey = GlobalKey<FormState>();
 
+  final ImagePicker imagePicker = ImagePicker();
+  String? base64String;
   XFile? imageFile;
-  ImagePicker imagePicker = ImagePicker();
+  String? imagePath = '';
+
+  final UpdateProfileController updateProfileController =
+      Get.put<UpdateProfileController>(UpdateProfileController());
 
   @override
   void initState() {
     super.initState();
-    _emailController.text = userData.email ?? "";
-    _firstNameController.text = userData.firstName ?? "";
-    _lastNameController.text = userData.lastName ?? "";
-    _mobileController.text = userData.mobile ?? "";
-  }
-
-  Future<void> updateProfile() async {
-    _profileUpdateInProgress = true;
-    if (mounted) {
-      setState(() {});
-    }
-
-    final Map<String, dynamic> responseBody = {
-      "firstName": _firstNameController.text.trim(),
-      "lastName": _lastNameController.text.trim(),
-      "mobile": _mobileController.text.trim(),
-      "photo": ""
-    };
-
-    if (_passwordController.text.isNotEmpty) {
-      responseBody["password"] = _passwordController.text;
-    }
-
-    final NetworkResponse response =
-        await NetworkCaller().postRequest(Urls.profileUpdate, responseBody);
-
-    _profileUpdateInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-    if (response.isSuccess) {
-       userData.firstName = _firstNameController.text.trim();
-       userData.lastName = _lastNameController.text.trim();
-       userData.mobile = _mobileController.text.trim();
-
-       AuthUtility.updateUserInfo(userData);
-
-      _passwordController.clear();
-      if (mounted) {
-        showSnackBar("Profile updated", context, Colors.green[500], true);
-      }
-    } else {
-      if (mounted) {
-        showSnackBar("Profile update failed, try again", context,
-            Colors.red[500], false);
-      }
-    }
+    updateProfileController.emailController.text = userData.email ?? "";
+    updateProfileController.firstNameController.text = userData.firstName ?? "";
+    updateProfileController.lastNameController.text = userData.lastName ?? "";
+    updateProfileController.mobileController.text = userData.mobile ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Form(
-      key: _formKey,
+      key: _updateProfileFormKey,
       child: ScreenBackground(
         child: Center(
           child: SingleChildScrollView(
@@ -102,37 +56,80 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  Row(
+                  Stack(
                     children: [
-                      Expanded(
-                          flex: 3,
-                          child: SizedBox(
-                            height: 50,
-                            child: TextButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.grey, // This is what you need!
-                              ),
-                              child: const Text(
-                                "Photos",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          )),
-                      const Expanded(
-                        flex: 7,
-                        child: TextField(
-                          decoration: InputDecoration(),
+                      CircleAvatar(
+                          radius: 50,
+                          backgroundImage: imagePath!.isNotEmpty
+                              ? FileImage(File(imagePath.toString()))
+                              : null),
+                      Positioned(
+                        bottom: -10,
+                        left: 50,
+                        child: IconButton(
+                          onPressed: () {
+                            getImage();
+                          },
+                          icon: const Icon(
+                            Icons.add_a_photo,
+                            color: Colors.red,
+                          ),
                         ),
                       ),
                     ],
                   ),
+
+                  //  SizedBox(
+                  //   height: 100,
+                  //   child: CircleAvatar(
+                  //     radius: 50,
+                  //     backgroundImage: imagePath.isNotEmpty ?
+                  //     FileImage(File(imagePath.toString())) :
+                  //         null
+                  //   ),
+                  // ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //         flex: 3,
+                  //         child: SizedBox(
+                  //           height: 50,
+                  //           child: TextButton(
+                  //             onPressed: ()  {
+                  //               getImage();
+                  //             },
+                  //             style: ElevatedButton.styleFrom(
+                  //               backgroundColor:
+                  //                   Colors.grey, // This is what you need!
+                  //             ),
+                  //             child: const Text(
+                  //               "Photos",
+                  //               style: TextStyle(color: Colors.white),
+                  //             ),
+                  //           ),
+                  //         )),
+                  //     //  Expanded(
+                  //     //   flex: 7,
+                  //     //   child: Container(
+                  //     //      width: double.infinity,
+                  //     //     height: 50,
+                  //     //     alignment: Alignment.centerLeft,
+                  //     //     decoration: const BoxDecoration(
+                  //     //       color: Colors.white
+                  //     //     ),
+                  //     //     child: Padding(
+                  //     //       padding: const EdgeInsets.all(8.0),
+                  //     //       child: Text(""),
+                  //     //     ),
+                  //     //   ),
+                  //     // ),
+                  //   ],
+                  // ),
                   const SizedBox(
-                    height: 12,
+                    height: 16,
                   ),
                   TextFormField(
-                    controller: _emailController,
+                    controller: updateProfileController.emailController,
                     readOnly: true,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
@@ -143,7 +140,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     height: 12,
                   ),
                   TextFormField(
-                      controller: _firstNameController,
+                      controller: updateProfileController.firstNameController,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         hintText: "First Name",
@@ -158,7 +155,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     height: 12,
                   ),
                   TextFormField(
-                      controller: _lastNameController,
+                      controller: updateProfileController.lastNameController,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         hintText: "Last Name",
@@ -173,7 +170,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     height: 12,
                   ),
                   TextFormField(
-                      controller: _mobileController,
+                      controller: updateProfileController.mobileController,
                       keyboardType: TextInputType.phone,
                       decoration: const InputDecoration(
                         hintText: "Mobile",
@@ -188,7 +185,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     height: 12,
                   ),
                   TextFormField(
-                    controller: _passwordController,
+                    controller: updateProfileController.passwordController,
                     keyboardType: TextInputType.phone,
                     obscureText: _isVisible,
                     decoration: InputDecoration(
@@ -210,21 +207,53 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(
                     height: 16,
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: _profileUpdateInProgress
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                updateProfile();
-                              }
-                            },
-                            child:
-                                const Icon(Icons.arrow_circle_right_outlined)),
-                  ),
+                  GetBuilder<UpdateProfileController>(
+                      builder: (updateProfileController) {
+                    return SizedBox(
+                      width: double.infinity,
+                      child: updateProfileController.profileUpdateInProgress
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : ElevatedButton(
+                              onPressed: () {
+                                if (_updateProfileFormKey.currentState!
+                                    .validate()) {
+                                  updateProfileController
+                                      .updateProfile()
+                                      .then((value) {
+                                    if (value == true) {
+                                      userData.firstName =
+                                          updateProfileController
+                                              .firstNameController.text
+                                              .trim();
+                                      userData.lastName =
+                                          updateProfileController
+                                              .lastNameController.text
+                                              .trim();
+                                      userData.mobile = updateProfileController
+                                          .mobileController.text
+                                          .trim();
+                                      AuthUtility.updateUserInfo(userData);
+                                      showGetXSnackBar(
+                                          "Profile update",
+                                          "Profile updated",
+                                          Colors.green[500],
+                                          true);
+                                    } else {
+                                      showSnackBar(
+                                          "Profile update",
+                                          "Profile update failed, try again",
+                                          Colors.red[500],
+                                          false);
+                                    }
+                                  });
+                                }
+                              },
+                              child: const Icon(
+                                  Icons.arrow_circle_right_outlined)),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -232,5 +261,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         ),
       ),
     ));
+  }
+
+  void getImage() async {
+    final pickedImage =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      imagePath = pickedImage.path.toString();
+    }
   }
 }

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager_getx/ui/screens/auth/reset_password_screen.dart';
-import '../../utils/show_snackbar.dart';
+import '../../utils/getx_snackbar.dart';
 import '../../widgets/screen_background.dart';
 import '../state_manager/otp_verification_controller.dart';
 import 'login_screen.dart';

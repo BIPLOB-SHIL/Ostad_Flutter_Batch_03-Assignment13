@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager_getx/ui/screens/update_task_status_bottom_sheet.dart';
 import '../../../data/models/task_list_model.dart';
 import '../../../data/utils/urls.dart';
+import '../../utils/getx_bottom_sheet.dart';
 import '../../widgets/screen_background.dart';
 import '../../widgets/task_list_tile.dart';
 import '../../widgets/user_profile_banner.dart';
@@ -19,7 +20,8 @@ class InProgressTaskScreen extends StatefulWidget {
 
 class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
 
-  final AllTaskController allTaskController = Get.put<AllTaskController>(AllTaskController());
+  final AllTaskController allTaskController = Get.put<AllTaskController>(
+      AllTaskController());
 
   @override
   void initState() {
@@ -38,29 +40,34 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
           children: [
             const UserProfileBanner(),
             GetBuilder<AllTaskController>(
-              builder: (allTaskController) {
-                return Expanded(
-                  child: allTaskController.getProgress
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : ListView.builder(
-                          itemCount: allTaskController.taskListModel.data?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            return TaskListTile(
-                              backgroundColor: Colors.purple,
-                              data: allTaskController.taskListModel.data![index],
-                              onDeleteTap: () {
-                                allTaskController.deleteTask(allTaskController.taskListModel.data![index].sId!);
-                              },
-                              onEditTap: () {
-                                showStatusTaskBottomSheet(allTaskController.taskListModel.data![index]);
-                              },
-                            );
+                builder: (allTaskController) {
+                  return Expanded(
+                    child: allTaskController.getProgress
+                        ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                        : ListView.builder(
+                      itemCount: allTaskController.taskListModel.data?.length ??
+                          0,
+                      itemBuilder: (context, index) {
+                        return TaskListTile(
+                          backgroundColor: Colors.purple,
+                          data: allTaskController.taskListModel.data![index],
+                          onDeleteTap: () {
+                            allTaskController.deleteTask(
+                                allTaskController.taskListModel.data![index]
+                                    .sId!);
                           },
-                        ),
-                );
-              }
+                          onEditTap: () {
+                            showGetXStatusTaskBottomSheet(
+                                allTaskController.taskListModel.data![index],
+                                Urls.inProgressTask);
+                          },
+                        );
+                      },
+                    ),
+                  );
+                }
             ),
           ],
         ),
@@ -68,17 +75,4 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
     );
   }
 
-  void showStatusTaskBottomSheet(TaskData task) {
-    showModalBottomSheet(
-        context: context,
-        useSafeArea: true,
-        // isScrollControlled: true,
-        builder: (context) {
-          return UpdateStatusBottomSheet(
-              task: task,
-              onUpdate: () {
-                allTaskController.getAllTask(Urls.inProgressTask);
-              });
-        });
-  }
 }

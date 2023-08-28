@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
-import '../../utils/show_snackbar.dart';
+import '../../utils/getx_snackbar.dart';
 import '../../widgets/screen_background.dart';
 import '../state_manager/email_verification_controller.dart';
 import 'otp_verification_screen.dart';

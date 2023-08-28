@@ -6,10 +6,14 @@ import 'package:task_manager_getx/ui/screens/auth/splash_screen.dart';
 import 'package:task_manager_getx/ui/screens/state_manager/all_task_controller.dart';
 import 'package:task_manager_getx/ui/screens/state_manager/email_verification_controller.dart';
 import 'package:task_manager_getx/ui/screens/state_manager/login_controller.dart';
+import 'package:task_manager_getx/ui/screens/state_manager/new_task_controller.dart';
 import 'package:task_manager_getx/ui/screens/state_manager/summary_count_controller.dart';
 import 'package:task_manager_getx/ui/screens/state_manager/otp_verification_controller.dart';
 import 'package:task_manager_getx/ui/screens/state_manager/reset_password_controller.dart';
 import 'package:task_manager_getx/ui/screens/state_manager/signup_controller.dart';
+import 'package:task_manager_getx/ui/screens/state_manager/update_profile_controller.dart';
+import 'package:task_manager_getx/ui/screens/state_manager/update_task_bottom_sheet_controller.dart';
+import 'package:task_manager_getx/ui/screens/state_manager/update_task_status_bottom_sheet_controller.dart';
 
 class TaskManagerApp extends StatefulWidget {
   static GlobalKey<ScaffoldState> globalKey = GlobalKey<ScaffoldState>();
@@ -67,8 +71,12 @@ class ControllerBinding extends Bindings {
     Get.put<EmailVerificationController>(EmailVerificationController());
     Get.put<SummaryCountController>(SummaryCountController());
     Get.put<AllTaskController>(AllTaskController());
+    Get.put<UpdateTaskStatusBottomSheetController>(UpdateTaskStatusBottomSheetController());
+    Get.put<UpdateTaskBottomSheetController>(UpdateTaskBottomSheetController());
+    Get.put<NewTaskController>(NewTaskController());
+    Get.put<UpdateProfileController>(UpdateProfileController());
 
-   //Get.lazyPut(() => ResetPasswordController());
+    //Get.lazyPut(() => ResetPasswordController());
 
   }
 }

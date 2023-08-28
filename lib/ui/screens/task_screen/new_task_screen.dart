@@ -2,9 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:task_manager_getx/ui/screens/update_task_status_bottom_sheet.dart';
-import '../../../data/models/task_list_model.dart';
 import '../../../data/utils/urls.dart';
+import '../../utils/getx_bottom_sheet.dart';
 import '../../widgets/screen_background.dart';
 import '../../widgets/summary_card.dart';
 import '../../widgets/task_list_tile.dart';
@@ -97,8 +96,8 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                                   allTaskController.deleteTask(allTaskController.taskListModel.data![index].sId!);
                                 },
                                 onEditTap: () {
-                                  showStatusTaskBottomSheet(
-                                      allTaskController.taskListModel.data![index]);
+                                  showGetXStatusTaskBottomSheet(
+                                      allTaskController.taskListModel.data![index],Urls.newTask);
                                 },
                               );
                             },
@@ -119,19 +118,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     );
   }
 
-  void showStatusTaskBottomSheet(TaskData task) {
-    showModalBottomSheet(
-        context: context,
-        useSafeArea: true,
-        // isScrollControlled: true,
-        builder: (context) {
-          return UpdateStatusBottomSheet(
-              task: task,
-              onUpdate: () {
-                allTaskController.getAllTask(Urls.newTask);
-              });
-        });
-  }
+
 
 
 }
