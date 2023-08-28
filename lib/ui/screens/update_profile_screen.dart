@@ -25,7 +25,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final ImagePicker imagePicker = ImagePicker();
   String? base64String;
   XFile? imageFile;
-  String? imagePath = '';
+  String imagePath = '';
 
   final UpdateProfileController updateProfileController =
       Get.put<UpdateProfileController>(UpdateProfileController());
@@ -60,15 +60,20 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     children: [
                       CircleAvatar(
                           radius: 50,
-                          backgroundImage: imagePath!.isNotEmpty
+                          backgroundImage: imagePath.isNotEmpty
                               ? FileImage(File(imagePath.toString()))
-                              : null),
+                              : null
+                      ),
                       Positioned(
                         bottom: -10,
                         left: 50,
                         child: IconButton(
                           onPressed: () {
                             getImage();
+                            if (mounted){
+                              setState(() {
+                              });
+                            }
                           },
                           icon: const Icon(
                             Icons.add_a_photo,
@@ -270,5 +275,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if (pickedImage != null) {
       imagePath = pickedImage.path.toString();
     }
+    setState(() {
+
+    });
   }
 }
